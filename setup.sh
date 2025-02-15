@@ -1,17 +1,17 @@
 #!/bin/bash
 
 LOG_FILE="setup.log"
-exec > >(tee -a "$LOG_FILE") 2>&1  # 모든 출력을 로그 파일에 저장
+exec > >(tee -a "$LOG_FILE") 2>&1  # Save all output to a log file
 
 echo "🚀 Starting Golang development environment setup..."
 
-# 오류 처리 함수
+# Error handling function
 error_exit() {
     echo "❌ ERROR: $1"
     exit 1
 }
 
-# Homebrew 설치 확인
+# Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
     echo "🍺 Homebrew not found. Installing..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || error_exit "Failed to install Homebrew"
@@ -19,17 +19,17 @@ else
     echo "✅ Homebrew already installed."
 fi
 
-# 필수 패키지 설치
+# Installing required packages
 echo "📦 Installing required packages..."
 brew install tmux neovim fzf ripgrep git wget go || error_exit "Failed to install packages"
 
-# tmux 플러그인 매니저(TPM) 설치
+# Setting up tmux plugin manager (TPM)
 echo "🛠 Setting up tmux..."
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || error_exit "Failed to clone TPM"
 fi
 
-# tmux 설정 파일 생성
+# Creating tmux configuration file
 cat << EOF > ~/.tmux.conf
 set -g mouse on
 set -g history-limit 10000
@@ -54,14 +54,14 @@ EOF
 echo "🔄 Applying tmux configuration..."
 tmux source ~/.tmux.conf || echo "⚠️ Warning: tmux not running, configuration will be applied on next start."
 
-# vim-plug 설치
+# Installing vim-plug for Neovim
 echo "🔌 Installing vim-plug for Neovim..."
 if [ ! -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
     curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim || error_exit "Failed to install vim-plug"
 fi
 
-# Neovim 설정 파일 생성
+# Creating Neovim configuration file
 mkdir -p ~/.config/nvim
 cat << EOF > ~/.config/nvim/init.lua
 vim.opt.number = true
@@ -112,11 +112,11 @@ cmp.setup({
 vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 EOF
 
-# Neovim 플러그인 설치
+# Installing Neovim plugins
 echo "📥 Installing Neovim plugins..."
 nvim +PlugInstall +qall || error_exit "Failed to install Neovim plugins"
 
-# Golang 개발 도구 설치
+# Installing Golang development tools
 echo "🛠 Installing Golang development tools..."
 go install golang.org/x/tools/gopls@latest \
     github.com/cweill/gotests/gotests@latest \
@@ -125,13 +125,13 @@ go install golang.org/x/tools/gopls@latest \
     github.com/haya14busa/goplay/cmd/goplay@latest \
     github.com/go-delve/delve/cmd/dlv@latest || error_exit "Failed to install Golang tools"
 
-# 환경변수 설정
+# Configuring environment variables
 if ! grep -q 'export PATH=$HOME/go/bin:$PATH' ~/.zshrc; then
     echo 'export PATH=$HOME/go/bin:$PATH' >> ~/.zshrc
     source ~/.zshrc
 fi
 
-# vim을 nvim으로 연결
+# Linking vim to nvim
 if ! grep -q 'alias vim="nvim"' ~/.zshrc; then
     echo 'alias vim="nvim"' >> ~/.zshrc
     source ~/.zshrc
