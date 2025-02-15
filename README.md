@@ -1,4 +1,4 @@
-# Golang + Neovim + tmux Development Environment Setup
+# Golang + Neovim + tmux Development Setup
 
 ## Overview
 This script automates the installation and configuration of a Golang development environment using **Neovim** and **tmux**. It installs all required dependencies, configures Neovim with LSP and autocompletion, and sets up tmux with useful plugins.
