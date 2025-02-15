@@ -21,7 +21,7 @@ This script automates the installation and configuration of a Golang development
 To install and configure everything in one step, run the following command:
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/your-repo/golang-nvim-setup/main/setup.sh | bash
+curl -sSL https://raw.githubusercontent.com/Sith-call/Golang-tmux-nvim/main/setup.sh | bash
 ```
 
 Or, if you have downloaded `setup.sh`, give it execution permission and run it:
